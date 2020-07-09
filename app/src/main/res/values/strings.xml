@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">mvp-rx</string>
+    <string name="enter_a_valid_email_below">Email:</string>
+    <string name="password_than_8_chrs"><![CDATA[password (>=  8 chars):]]></string>
+    <string name="submit">Submit</string>
+    <string name="email_validation">Please enter valid email</string>
+    <string name="pass_validation">Incorrect password</string>
+</resources>
