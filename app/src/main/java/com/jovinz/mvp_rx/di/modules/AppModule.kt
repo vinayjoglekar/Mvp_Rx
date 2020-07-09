@@ -1,6 +1,8 @@
 package com.jovinz.mvp_rx.di.modules
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import com.jovinz.mvp_rx.utils.AppSchedulerProvider
+import com.jovinz.mvp_rx.utils.SchedulerProvider
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -11,6 +13,10 @@ import javax.inject.Singleton
 
 @Module
 class AppModule {
+
+    @Provides
+    @Singleton
+    fun provideSchedulerProvider(): SchedulerProvider = AppSchedulerProvider()
 
     @Singleton
     @Provides
@@ -26,10 +32,5 @@ class AppModule {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
     }
-
-    @Singleton
-    @Provides
-    fun provideApiKey(): String = "0ba1ead43a849d61114e60ff7322b791"
-
 
 }

@@ -1,41 +1,43 @@
 package com.jovinz.mvp_rx.presenter
 
-import com.jovinz.mvp_rx.network.ApiClient
-import com.jovinz.mvp_rx.network.ApiInterface
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.jovinz.mvp_rx.model.MovieListModel
+import com.jovinz.mvp_rx.utils.ApiKey
+import com.jovinz.mvp_rx.utils.FilterData
+import com.jovinz.mvp_rx.utils.SchedulerProvider
+import javax.inject.Inject
 
-
-class MovieListPresenter :
+class MovieListPresenter @Inject constructor(
+    private val filterData: FilterData,
+    private var apiKey: ApiKey,
+    private var schedulerProvider: SchedulerProvider,
+    private var movieListModel: MovieListModel
+) :
     BasePresenter<MovieListView>() {
 
-    fun requestDataFromServer(apiKey: String, pageNo: Int) {
+    fun requestDataFromServer(pageNo: Int) {
         view?.showProgress()
-        val client = ApiClient.client?.create(ApiInterface::class.java)
-
         val currentDisposable =
-            client?.getPopularMovies(apiKey = apiKey, pageNo = pageNo)
-                ?.flatMap { it -> Observable.fromIterable(it.results) }
-                ?.filter { it.originalLanguage.equals("en") }
-                ?.toList()
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe { response, error ->
+            movieListModel.execute(apiKey, 1, filterData)
+                ?.subscribeOn(schedulerProvider.ioScheduler())
+                ?.observeOn(schedulerProvider.uiScheduler())
+                ?.subscribe({ response ->
                     if (!response.isNullOrEmpty()) {
                         view?.apply {
                             setData(response)
                             hideProgress()
                         }
                     } else {
-                        error?.let {
-                            view?.apply {
-                                onResponseFailure(error)
-                                hideProgress()
-                            }
+                        view?.apply {
+                            onResponseFailure(Throwable("EmptyList"))
+                            hideProgress()
                         }
                     }
-                }
+                }, { throwable ->
+                    view?.apply {
+                        onResponseFailure(throwable)
+                        hideProgress()
+                    }
+                })
     }
 
 

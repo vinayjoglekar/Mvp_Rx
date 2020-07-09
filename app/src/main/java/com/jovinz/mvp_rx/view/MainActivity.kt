@@ -18,14 +18,11 @@ class MainActivity : DaggerAppCompatActivity(), MovieListView {
     @Inject
     lateinit var movieListPresenter: MovieListPresenter
 
-    @Inject
-    lateinit var apiKey: String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         movieListPresenter.attachView(this)
-        movieListPresenter.requestDataFromServer(apiKey, 1)
+        movieListPresenter.requestDataFromServer( 1)
     }
 
     override fun showProgress() {
