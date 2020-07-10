@@ -22,7 +22,10 @@ class MainActivity : DaggerAppCompatActivity(), MovieListView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         movieListPresenter.attachView(this)
-        movieListPresenter.requestDataFromServer( 1)
+        movieListPresenter.requestDataFromServer(1)
+        //this is just for hands on purpose
+        movieListPresenter.requestTwoPagesFromServer()
+        movieListPresenter.requestThreePagesFromServer()
     }
 
     override fun showProgress() {
@@ -34,6 +37,7 @@ class MainActivity : DaggerAppCompatActivity(), MovieListView {
     }
 
     override fun setData(movies: List<Result>) {
+        Log.d("SETDATA", movies.size.toString())
         val moviesList = StringBuilder()
         movies.forEach { result ->
             moviesList.append(
